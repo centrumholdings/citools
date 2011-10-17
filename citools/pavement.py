@@ -227,7 +227,7 @@ def replace_templates(env):
     build = build_task.command_class(build_task.distribution)
     build.set_undefined_options('build', ('build_lib', 'build_lib'))
 
-    vars['build_lib'] = build.build_lib
+    comm_vars['build_lib'] = build.build_lib
 
     replace_template_files(
         root_directory=os.curdir,
