@@ -151,7 +151,7 @@ def get_common_variables(distribution):
         'version' : distribution.version if hasattr(distribution, "version") and distribution.version else distribution.get_version(),
         'build_date' : _get_now_date_rfc(),
         'revision_key' : get_git_last_hash(),
-	'build_lib' : getattr(distribution, 'build_lib', 'build'),
+	'build_lib' : getattr(distribution, 'build', 'build'),
     }
 
     probe = getattr(distribution.metadata, "template_attributes", [
