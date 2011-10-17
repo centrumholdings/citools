@@ -83,9 +83,9 @@ def bootstrap():
 
     print '*'*80
     if sys.platform in ('win32', 'winnt'):
-        print "* Before running other commands, You now *must* run %s" % os.path.join("bin", "activate.bat")
+        print "* Before running other commands, You now *must* run %s" % join("bin", "activate.bat")
     else:
-        print "* Before running other commands, You now *must* run source %s" % os.path.join("bin", "activate")
+        print "* Before running other commands, You now *must* run source %s" % join("bin", "activate")
     print '*'*80
 
 @task
@@ -178,7 +178,7 @@ def replace_version(options):
 
     replace_version_in_file(options.version, 'setup.py')
 
-    if os.path.exists('pavement.py'):
+    if exists('pavement.py'):
         replace_version_in_file(options.version, 'pavement.py')
 
 
@@ -197,15 +197,12 @@ def build_debian_package(options):
     ('forgive-no-packages', 'n', 'It is OK to upload even if there are no packages'),
 ])
 def upload_debian_package(options):
-    import os
-    from ftplib import FTP
-
     from citools.debian.commands import get_packages_names, get_package_path
     from citools.ftp import upload_package
     
     packages = get_packages_names()
 
-    if len(packages) == 0:
+    if not len(packages):
         raise ValueError("Not uploading: no package recognized")
 
     if not getattr(options, "version_str", None):
@@ -278,11 +275,11 @@ def install_production_packages(options):
         fabfile = import_fabfile()
     # invoke fabric task
     args = (clean_machine, production_machine, production_backend_machine, enabled_architectures)
-    options.packages_list = fab(clean_machine, 
-				fabfile['install_production_packages'], 
-				resolve,
-				args
-				)
+    options.packages_list = fab(clean_machine,
+                                fabfile['install_production_packages'],
+                                resolve,
+                                args
+    )
 
 
 @task
@@ -306,11 +303,11 @@ def execute_diff_packages(options):
         fabfile = import_fabfile()
     # invoke fabric task
     args = (options.packages_list, unwanted_packages, section_packages, disable_urls)
-    options.diff_packages_list = fab(preproduction_machine, 
-				 fabfile['execute_diff_packages'], 
-				 resolve,
-				 args 
-				 )
+    options.diff_packages_list = fab(preproduction_machine,
+                                     fabfile['execute_diff_packages'],
+                                     resolve,
+                                     args
+    )
 
 
 @task
@@ -337,11 +334,11 @@ def download_diff_packages(options):
         fabfile = import_fabfile()
     # invoke fabric task
     args = (options.diff_packages_list, project, project_version, project_config, project_only, prompt_type)
-    options.packages_for_upload = fab(clean_machine, 
-				 fabfile['download_diff_packages'], 
-				 resolve,
-				 args
-				 )
+    options.packages_for_upload = fab(clean_machine,
+                                      fabfile['download_diff_packages'],
+                                      resolve,
+                                      args
+    )
   
 
 @task
@@ -378,12 +375,13 @@ def resolve(host):
 
     return (host,) + normalize(host)
 
-def fab(host, cmd, resolve=resolve, args=(), kwargs={}):
+def fab(host, cmd, resolve=resolve, args=(), kwargs=None):
     """call one fabric task"""
     from fabric.main import find_fabfile, load_fabfile
     from fabric.network import normalize
     from fabric import state
 
+    kwargs = kwargs or {}
     host_string, username, hostname, port = resolve(host)
     state.env.host_string = host_string
     state.env.host = hostname
