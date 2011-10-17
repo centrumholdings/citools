@@ -231,7 +231,7 @@ def replace_templates(env):
 
     replace_template_files(
         root_directory=os.curdir,
-        variables=get_common_variables(),
+        variables=comm_vars,
         subdirs=getattr(options, "template_files_directories", None)
     )
 
