@@ -150,7 +150,8 @@ def get_common_variables(distribution):
     variables = {
         'version' : distribution.version if hasattr(distribution, "version") and distribution.version else distribution.get_version(),
         'build_date' : _get_now_date_rfc(),
-        'revision_key' : get_git_last_hash()     
+        'revision_key' : get_git_last_hash(),
+	'build_lib' : getattr(distribution, 'build_lib', 'build'),
     }
 
     probe = getattr(distribution.metadata, "template_attributes", [
@@ -186,12 +187,11 @@ class ReplaceTemplateFiles(Command):
                                     ('build_lib', 'build_lib'))
 
     def run(self):
-        vars = get_common_variables(self.distribution)
-        vars['build_lib'] = self.build_lib
+        comvars = get_common_variables(self.distribution)
 
         replace_template_files(
             root_directory=os.curdir,
-            variables=vars,
+            variables=comvars,
             subdirs=getattr(self.distribution, "template_files_directories", None)
         )
 
