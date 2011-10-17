@@ -219,10 +219,19 @@ def rename_template_files():
     _rename_template_files(root_directory=os.curdir, variables=get_common_variables(_get_distribution()))
 
 @task
-def replace_templates():
+def replace_templates(env):
+    dist = _get_distribution()
+    comm_vars = get_common_variables(dist)
+
+    build_task = env.get_task('build')
+    build = build_task.command_class(build_task.distribution)
+    build.set_undefined_options('build', ('build_lib', 'build_lib'))
+
+    vars['build_lib'] = build.build_lib
+
     replace_template_files(
         root_directory=os.curdir,
-        variables=get_common_variables(_get_distribution()),
+        variables=get_common_variables(),
         subdirs=getattr(options, "template_files_directories", None)
     )
 
