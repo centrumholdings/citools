@@ -64,8 +64,7 @@ def integrate_project(args):
     import nose
 
     nose.run_exit(
-        argv = ["nosetests", "--with-django", "--with-selenium", "--with-djangoliveserver"]+args,
-        defaultTest = "tests"
+        argv = ["nosetests", "--with-django", "--with-selenium", "--with-djangoliveserver"]+args
     )
 
 
