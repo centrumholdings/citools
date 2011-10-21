@@ -1,3 +1,4 @@
+from shutil import rmtree
 from subprocess import CalledProcessError
 from distutils.command.config import config
 import re
@@ -387,7 +388,7 @@ def retrieve_current_branch(fix_environment=False, repository_directory=None, **
                 del os.environ['GIT_DIR']
 
 
-def compute_meta_version(dependency_repositories, workdir=None, accepted_tag_pattern=None, cachedir=None, dependency_versions=None):
+def compute_meta_version(dependency_repositories, workdir=None, accepted_tag_pattern=None, cachedir=None, dependency_versions=None, remove_cloned_dirs=False):
 
     kwargs = {}
 
@@ -437,6 +438,8 @@ def compute_meta_version(dependency_repositories, workdir=None, accepted_tag_pat
         if dependency_versions is not None:
             dependency_versions[repository_dict['package_name']] = new_version
         version = sum_versions(version, new_version)
+        if remove_cloned_dirs:
+            rmtree(workdir)
     return version
 
 
